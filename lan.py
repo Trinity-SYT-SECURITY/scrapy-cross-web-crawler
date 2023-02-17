@@ -6,14 +6,14 @@ from google_trans_new import google_translator
 nmt = google_translator()
 
 import time
-path = '/home/kali/Desktop/test2/test2/spiders/CVE-2/'
+path = ' '#要翻譯的文檔位置
 def read_text(file_path):
 
     with open(file_path, encoding="utf-8") as file:
         text = file.read()
     return text
 
-to_lang = "zh-TW"
+to_lang = "zh-TW"#在該文檔位置下創建保存結果的資料夾
 # 如果不存在目標文件夾，則創建目標文件夾
 target_dir = os.path.join(path, to_lang)
 if not os.path.exists(target_dir):
