@@ -4,22 +4,23 @@ import os
 from googletrans import Translator
 import string
 
-headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
-           'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-           'Accept-Encoding':'gzip, deflate, br',
-           'Accept-Language':'en-US,en;q=0.5',
-           'content-type':'text/html;charset=UTF-8',
-           'Referer': 'https://nvd.nist.gov/vuln/full-listing/2023/2'}
+#headers請按F12後Network底下查看詳細資訊，每台機器不太一樣
+headers = {'User-Agent': ' ',
+           'Accept':' ',
+           'Accept-Encoding':' ',
+           'Accept-Language':' ',
+           'content-type':' ', 
+           'Referer': ''}#要爬蟲的主網頁連結
 
-class testbase(scrapy.Spider):
-    name = 'testbase'
-    allowed_domains = ['nvd.nist.gov']
+class scrapytxt(scrapy.Spider):#class名稱必須跟檔名一樣
+    name = 'scrapytxt'
+    allowed_domains = [' ']#網站的domain
 
-    start_urls = ['https://nvd.nist.gov/vuln/full-listing/2023/2/']
+    start_urls = [' '] #起始的主網頁連結
     download_delay = 10
 
     def parse(self, response):
-        # 爬取主页面中的所有超链接
+        # 爬取主页面中的所有超連結
         links = response.css("div.row a::attr(href)").getall()
         if links is not None:
             if not links[0].startswith("https"):
@@ -33,7 +34,7 @@ class testbase(scrapy.Spider):
 
     def parse_link(self, response):
         
-        contenthead = response.css("td span::text").get()#Detail CVE-20xx-xxxxx
+        contenthead = response.css("td span::text").get() #跨網站後的元素定位，這裡需要根據要爬取的網站在跨連結爬取後你要的元素位置，每個網站位置不同response.css後都要自行更改
         
         if contenthead is not None:
             
@@ -44,13 +45,13 @@ class testbase(scrapy.Spider):
         else:
             contenthead = ""
         
-         # 爬取文字内容#Description
+       
         content = response.css('div.col-lg-9.col-md-7.col-sm-12  p::text').getall()
         if content is not None:
             
             #content = str(content)
             content = ''.join(content) # 將內容轉成字串
-
+                                 
             #del the content while appear the some html grammar and newline symbol
             content = re.sub(r'<.*?>', '', content)
             content = content.replace('\r', '')
@@ -64,7 +65,7 @@ class testbase(scrapy.Spider):
             content=""
         
         
-        summary = response.css("div.row.bs-callout.bs-callout-success.cvssVulnDetail ::text").getall()#Severity 
+        summary = response.css("div.row.bs-callout.bs-callout-success.cvssVulnDetail ::text").getall()
         if summary is not None:
             
             summary =  ''.join(summary)
@@ -95,21 +96,17 @@ class testbase(scrapy.Spider):
              
         
         ###########################################
-        folder_name = 'CVE-2'
+        folder_name = ' '#在於你爬下來資料後想要創建的目錄名稱，這會保存所有爬取結果
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
         
         
-        # 写入txt文件中
+        # 寫入文件
         #filename = f'{response.meta["index"]}.txt'
         filename = response.url.split("/")[-1] + ".txt"
         file_path=os.path.join(folder_name, filename)
         with open(file_path, 'w') as f:
             f.write(contenthead+"\n"+content+"\n"+summary+"\n"+Othermess)
             
-        '''
-        for lines in f.readlines():
-            ...
-        '''
-    
+     
         
