@@ -34,7 +34,7 @@ class scrapytxt(scrapy.Spider):#class名稱必須跟檔名一樣
 
     def parse_link(self, response):
         
-        contenthead = response.css("td span::text").get() #跨網站後的元素定位，這裡需要根據要爬取的網站在跨連結爬取後你要的元素位置，每個網站位置不同response.css後都要自行更改
+        contenthead = response.css("td span::text").get() #跨網站後的元素定位，這裡需要根據要爬取的網站在跨連結爬取後你要的元素位置，每個網站位置不同response.css後都要自行更改請根據html去做更動
         
         if contenthead is not None:
             
